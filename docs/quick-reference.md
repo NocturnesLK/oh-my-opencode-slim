@@ -279,6 +279,10 @@ Control which agents can access which MCP servers using per-agent allowlists:
 
 You can configure MCP access in your plugin configuration file: `~/.config/opencode/oh-my-opencode-slim.json` (or `.jsonc`).
 
+This allowlist is evaluated against **all MCP servers configured in OpenCode**
+(including any external MCP servers you add), not just the built-in MCPs shipped
+with this plugin.
+
 **Per-Agent Permissions**
 
 Control which agents can access which MCP servers using the `mcps` array in your preset. The syntax is the same as for skills:
