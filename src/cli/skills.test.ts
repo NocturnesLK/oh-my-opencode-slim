@@ -38,6 +38,15 @@ describe('skills permissions', () => {
     expect(specificPerms['bad-skill']).toBe('deny');
   });
 
+  it('should prioritize deny regardless of list order', () => {
+    const perms = getSkillPermissionsForAgent('designer', [
+      '!agent-browser',
+      'agent-browser',
+    ]);
+    expect(perms['*']).toBe('deny');
+    expect(perms['agent-browser']).toBe('deny');
+  });
+
   it('should honor wildcard in explicit list', () => {
     const wildcardPerms = getSkillPermissionsForAgent('designer', ['*']);
     expect(wildcardPerms['*']).toBe('allow');

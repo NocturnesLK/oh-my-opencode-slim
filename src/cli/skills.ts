@@ -1,4 +1,5 @@
 import { spawnSync } from 'node:child_process';
+import { buildPermissionRulesFromList } from '../config/list-syntax';
 
 /**
  * A recommended skill to install via `npx skills add`.
@@ -104,17 +105,7 @@ export function getSkillPermissionsForAgent(
 
   // If the user provided an explicit skill list (even empty), honor it
   if (skillList) {
-    permissions['*'] = 'deny';
-    for (const name of skillList) {
-      if (name === '*') {
-        permissions['*'] = 'allow';
-      } else if (name.startsWith('!')) {
-        permissions[name.slice(1)] = 'deny';
-      } else {
-        permissions[name] = 'allow';
-      }
-    }
-    return permissions;
+    return buildPermissionRulesFromList(skillList);
   }
 
   // Otherwise, use recommended defaults
