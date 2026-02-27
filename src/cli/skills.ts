@@ -1,5 +1,6 @@
 import { spawnSync } from 'node:child_process';
 import { buildPermissionRulesFromList } from '../config/list-syntax';
+import { CUSTOM_SKILLS } from './custom-skills';
 
 /**
  * A recommended skill to install via `npx skills add`.
@@ -17,6 +18,19 @@ export interface RecommendedSkill {
   description: string;
   /** Optional commands to run after the skill is added */
   postInstallCommands?: string[];
+}
+
+/**
+ * A skill that is managed externally (e.g. user-installed) and needs
+ * permission grants but is NOT installed by this plugin's CLI.
+ */
+export interface PermissionOnlySkill {
+  /** Skill name — must match the name OpenCode uses for permission checks */
+  name: string;
+  /** List of agents that should auto-allow this skill */
+  allowedAgents: string[];
+  /** Human-readable description (for documentation only) */
+  description: string;
 }
 
 /**
@@ -41,6 +55,19 @@ export const RECOMMENDED_SKILLS: RecommendedSkill[] = [
       'npm install -g agent-browser',
       'agent-browser install',
     ],
+  },
+];
+
+/**
+ * Skills managed externally (not installed by this plugin's CLI).
+ * Entries here only affect agent permission grants — nothing is installed.
+ */
+export const PERMISSION_ONLY_SKILLS: PermissionOnlySkill[] = [
+  {
+    name: 'requesting-code-review',
+    allowedAgents: ['oracle'],
+    description:
+      'Code review template for reviewer subagents in multi-step workflows',
   },
 ];
 
@@ -115,6 +142,26 @@ export function getSkillPermissionsForAgent(
       skill.allowedAgents.includes(agentName);
     if (isAllowed) {
       permissions[skill.skillName] = 'allow';
+    }
+  }
+
+  // Apply permissions from bundled custom skills
+  for (const skill of CUSTOM_SKILLS) {
+    const isAllowed =
+      skill.allowedAgents.includes('*') ||
+      skill.allowedAgents.includes(agentName);
+    if (isAllowed) {
+      permissions[skill.name] = 'allow';
+    }
+  }
+
+  // Apply permissions for externally-managed skills (not installed by this plugin)
+  for (const skill of PERMISSION_ONLY_SKILLS) {
+    const isAllowed =
+      skill.allowedAgents.includes('*') ||
+      skill.allowedAgents.includes(agentName);
+    if (isAllowed) {
+      permissions[skill.name] = 'allow';
     }
   }
 
