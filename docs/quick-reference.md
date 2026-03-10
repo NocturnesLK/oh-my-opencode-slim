@@ -423,6 +423,9 @@ OpenCode automatically formats files after they're written or edited using langu
 
 You can customize agent prompts by creating markdown files in `~/.config/opencode/oh-my-opencode-slim/`:
 
+- With no preset, prompt files are loaded directly from this directory.
+- With `preset` set (for example `test`), the plugin first checks `~/.config/opencode/oh-my-opencode-slim/{preset}/`, then falls back to the root prompt directory.
+
 | File | Purpose |
 |------|---------|
 | `{agent}.md` | Replaces the default prompt entirely |
@@ -432,6 +435,9 @@ You can customize agent prompts by creating markdown files in `~/.config/opencod
 
 ```
 ~/.config/opencode/oh-my-opencode-slim/
+  ├── test/
+  │   ├── orchestrator.md      # Preset-specific override (preferred)
+  │   └── explorer_append.md
   ├── orchestrator.md          # Custom orchestrator prompt
   ├── orchestrator_append.md   # Append to default orchestrator prompt
   ├── explorer.md
@@ -444,6 +450,7 @@ You can customize agent prompts by creating markdown files in `~/.config/opencod
 - Create `{agent}.md` to completely replace an agent's default prompt
 - Create `{agent}_append.md` to add custom instructions to the default prompt
 - Both files can exist simultaneously - the replacement takes precedence
+- When `preset` is set, `{preset}/{agent}.md` and `{preset}/{agent}_append.md` are checked first
 - If neither file exists, the default prompt is used
 
 This allows you to fine-tune agent behavior without modifying the source code.
