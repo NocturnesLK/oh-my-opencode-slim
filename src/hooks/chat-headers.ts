@@ -16,6 +16,10 @@ interface ChatHeadersOutput {
 const INTERNAL_MARKER_CACHE_LIMIT = 1000;
 const internalMarkerCache = new Map<string, boolean>();
 
+export function __resetInternalMarkerCacheForTesting(): void {
+  internalMarkerCache.clear();
+}
+
 function getProviderID(input: ChatHeadersInput): string {
   return input.provider.info?.id || input.model.providerID;
 }
