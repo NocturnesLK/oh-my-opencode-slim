@@ -1,7 +1,10 @@
-import { describe, expect, mock, test } from 'bun:test';
+import { beforeEach, describe, expect, mock, test } from 'bun:test';
 import type { PluginInput } from '@opencode-ai/plugin';
 import { createInternalAgentTextPart } from '../utils';
-import { createChatHeadersHook } from './chat-headers';
+import {
+  __resetInternalMarkerCacheForTesting,
+  createChatHeadersHook,
+} from './chat-headers';
 
 function createMockContext(parts: unknown[] = []) {
   return {
@@ -91,6 +94,10 @@ function createInput(
 }
 
 describe('createChatHeadersHook', () => {
+  beforeEach(() => {
+    __resetInternalMarkerCacheForTesting();
+  });
+
   test('sets x-initiator for marked Copilot messages', async () => {
     const ctx = createMockContext([
       createInternalAgentTextPart('internal notification'),
