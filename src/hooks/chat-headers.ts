@@ -46,9 +46,11 @@ async function hasInternalMarker(
       hasInternalInitiatorMarker,
     );
 
-    internalMarkerCache.set(cacheKey, hasMarker);
-    if (internalMarkerCache.size > INTERNAL_MARKER_CACHE_LIMIT) {
-      internalMarkerCache.clear();
+    if (hasMarker) {
+      internalMarkerCache.set(cacheKey, true);
+      if (internalMarkerCache.size > INTERNAL_MARKER_CACHE_LIMIT) {
+        internalMarkerCache.clear();
+      }
     }
 
     return hasMarker;
