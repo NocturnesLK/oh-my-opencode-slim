@@ -17,7 +17,7 @@ const INTERNAL_MARKER_CACHE_LIMIT = 1000;
 const internalMarkerCache = new Map<string, boolean>();
 
 function getProviderID(input: ChatHeadersInput): string {
-  return input.provider.info.id || input.model.providerID;
+  return input.provider.info?.id || input.model.providerID;
 }
 
 function isCopilotProvider(providerID: string): boolean {
